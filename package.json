@@ -27,6 +27,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@opengsn/gsn": "^0.8.2",
     "@openzeppelin/contracts": "^2.4.0",
     "@truffle/artifactor": "^4.0.38",
     "@truffle/contract": "^4.0.39",

@@ -12,8 +12,9 @@
 pragma solidity 0.5.17;
 
 import "./Tornado.sol";
+import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
 
-contract ERC20Tornado is Tornado {
+contract ERC20Tornado is BaseRelayRecipient, Tornado {
   address public token;
 
   constructor(
@@ -28,7 +29,7 @@ contract ERC20Tornado is Tornado {
 
   function _processDeposit() internal {
     require(msg.value == 0, "ETH value is supposed to be 0 for ERC20 instance");
-    _safeErc20TransferFrom(msg.sender, address(this), denomination);
+    _safeErc20TransferFrom(_msgSender(), address(this), denomination);
   }
 
   function _processWithdraw(address payable _recipient, address payable _relayer, uint256 _fee, uint256 _refund) internal {
