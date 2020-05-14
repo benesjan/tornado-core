@@ -8,7 +8,7 @@ const ERC20Mock = artifacts.require('ERC20Mock')
 
 module.exports = function(deployer, network, accounts) {
   return deployer.then(async () => {
-    const { MERKLE_TREE_HEIGHT, ERC20_TOKEN, TOKEN_AMOUNT } = process.env
+    const { MERKLE_TREE_HEIGHT, ERC20_TOKEN, TOKEN_AMOUNT, TRUSTED_FORWARDER } = process.env
     const verifier = await Verifier.deployed()
     const hasherInstance = await hasherContract.deployed()
     await ERC20Tornado.link(hasherContract, hasherInstance.address)
@@ -24,6 +24,7 @@ module.exports = function(deployer, network, accounts) {
       MERKLE_TREE_HEIGHT,
       accounts[0],
       token,
+      TRUSTED_FORWARDER
     )
     console.log('ERC20Tornado\'s address ', tornado.address)
   })

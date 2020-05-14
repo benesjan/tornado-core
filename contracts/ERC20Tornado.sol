@@ -22,9 +22,11 @@ contract ERC20Tornado is BaseRelayRecipient, Tornado {
     uint256 _denomination,
     uint32 _merkleTreeHeight,
     address _operator,
-    address _token
+    address _token,
+    address _trustedForwarder
   ) Tornado(_verifier, _denomination, _merkleTreeHeight, _operator) public {
     token = _token;
+    trustedForwarder = _trustedForwarder;
   }
 
   function _processDeposit() internal {
