@@ -1,0 +1,66 @@
+specVersion: 0.0.2
+description: CO2ken
+repository: https://github.com/CO2ken/CO2ken
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: BTC Tornado 0.001
+    network: ropsten
+    source:
+      address: "0x8425EBC05AC74338838A0D99Db495906dF2eAe22"
+      abi: ERC20Tornado
+      startBlock: 7925542  # The block in which the contract was deployed
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - AnonymitySet
+      abis:
+        - name: ERC20Tornado
+          file: ./abis/ERC20Tornado.json
+      eventHandlers:
+        - event: Deposit(indexed bytes32,uint32,uint256)
+          handler: handleDeposit
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: BTC Tornado 0.01
+    network: ropsten
+    source:
+      address: "0x2f2d3E612F3341eCDA859f2eB51b3a51b8eB62BB"
+      abi: ERC20Tornado
+      startBlock: 7925606  # The block in which the contract was deployed
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - AnonymitySet
+      abis:
+        - name: ERC20Tornado
+          file: ./abis/ERC20Tornado.json
+      eventHandlers:
+        - event: Deposit(indexed bytes32,uint32,uint256)
+          handler: handleDeposit
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: BTC Tornado 0.1
+    network: ropsten
+    source:
+      address: "0x8425EBC05AC74338838A0D99Db495906dF2eAe22"
+      abi: ERC20Tornado
+      startBlock: 7925617  # The block in which the contract was deployed
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - AnonymitySet
+      abis:
+        - name: ERC20Tornado
+          file: ./abis/ERC20Tornado.json
+      eventHandlers:
+        - event: Deposit(indexed bytes32,uint32,uint256)
+          handler: handleDeposit
+      file: ./src/mapping.ts
