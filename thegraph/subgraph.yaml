@@ -1,6 +1,6 @@
 specVersion: 0.0.2
-description: CO2ken
-repository: https://github.com/CO2ken/CO2ken
+description: BTC Tornado
+repository: https://github.com/btctornado/tornado-core
 schema:
   file: ./schema.graphql
 dataSources:
