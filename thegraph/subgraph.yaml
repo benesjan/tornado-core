@@ -8,9 +8,9 @@ dataSources:
     name: BTC Tornado 0.001
     network: ropsten
     source:
-      address: "0x8425EBC05AC74338838A0D99Db495906dF2eAe22"
+      address: "0x59Bf15eC506892396095A50feb077021f39c27Dc"
       abi: ERC20Tornado
-      startBlock: 7925542  # The block in which the contract was deployed
+      startBlock: 7957002
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -28,9 +28,9 @@ dataSources:
     name: BTC Tornado 0.01
     network: ropsten
     source:
-      address: "0x2f2d3E612F3341eCDA859f2eB51b3a51b8eB62BB"
+      address: "0xf5307f6680d335b1cae884b43d5b46e1b3671b30"
       abi: ERC20Tornado
-      startBlock: 7925606  # The block in which the contract was deployed
+      startBlock: 7957002
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -48,9 +48,9 @@ dataSources:
     name: BTC Tornado 0.1
     network: ropsten
     source:
-      address: "0x8425EBC05AC74338838A0D99Db495906dF2eAe22"
+      address: "0x758ab20c9a4ad3b609076e5f27b5665ed5b0c682"
       abi: ERC20Tornado
-      startBlock: 7925617  # The block in which the contract was deployed
+      startBlock: 7957002
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4

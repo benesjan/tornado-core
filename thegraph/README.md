@@ -13,7 +13,7 @@ To setup and deploy subgraph run the following commands:
 
     npx graph auth https://api.thegraph.com/deploy/ GRAPH_AUTH_TOKEN
 
-    npx graph deploy --debug --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ benesjan/CO2ken
+    npx graph deploy --debug --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ benesjan/btc-tornado
 
 ## Requesting data
 
