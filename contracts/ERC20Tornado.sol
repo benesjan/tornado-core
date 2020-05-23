@@ -14,8 +14,16 @@ pragma solidity 0.5.17;
 import "./Tornado.sol";
 import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
 
+
+contract PbtcTarget {
+  uint256 public denomination;
+
+  function redeem(uint256 amount, string calldata underlyingAssetRecipient) external returns (bool);
+}
+
 contract ERC20Tornado is BaseRelayRecipient, Tornado {
   address public token;
+  PbtcTarget public pbtcTarget;
 
   constructor(
     IVerifier _verifier,
@@ -27,6 +35,7 @@ contract ERC20Tornado is BaseRelayRecipient, Tornado {
   ) Tornado(_verifier, _denomination, _merkleTreeHeight, _operator) public {
     token = _token;
     trustedForwarder = _trustedForwarder;
+    pbtcTarget = PbtcTarget(_token);
   }
 
   function _processDeposit() internal {
@@ -34,20 +43,10 @@ contract ERC20Tornado is BaseRelayRecipient, Tornado {
     _safeErc20TransferFrom(_msgSender(), address(this), denomination);
   }
 
-  function _processWithdraw(address payable _recipient, address payable _relayer, uint256 _fee, uint256 _refund) internal {
-    require(msg.value == _refund, "Incorrect refund amount received by the contract");
-
-    _safeErc20Transfer(_recipient, denomination - _fee);
+  function _processWithdraw(string memory _btcRecipient, address payable _relayer, uint256 _fee) internal {
+    pbtcTarget.redeem(denomination - _fee, _btcRecipient);
     if (_fee > 0) {
       _safeErc20Transfer(_relayer, _fee);
-    }
-
-    if (_refund > 0) {
-      (bool success, ) = _recipient.call.value(_refund)("");
-      if (!success) {
-        // let's return _refund back to the relayer
-        _relayer.transfer(_refund);
-      }
     }
   }
 

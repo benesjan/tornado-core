@@ -43,6 +43,7 @@
     "dotenv": "^8.2.0",
     "eslint": "^6.6.0",
     "ganache-cli": "^6.7.0",
+    "keccak256": "^1.0.0",
     "snarkjs": "git+https://github.com/tornadocash/snarkjs.git#869181cfaf7526fe8972073d31655493a04326d5",
     "truffle": "^5.0.44",
     "truffle-flattener": "^1.4.2",

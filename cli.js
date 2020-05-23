@@ -17,6 +17,7 @@ const websnarkUtils = require('websnark/src/utils')
 const { toWei, fromWei, toBN, BN } = require('web3-utils')
 const config = require('./config')
 const program = require('commander')
+const keccak256 = require('keccak256')
 
 let web3, tornado, circuit, proving_key, groth16, erc20, senderAccount, netId
 let MERKLE_TREE_HEIGHT, ETH_AMOUNT, TOKEN_AMOUNT, PRIVATE_KEY
@@ -152,7 +153,7 @@ async function generateProof({ deposit, recipient, relayerAddress = 0, fee = 0, 
     // Public snark inputs
     root: root,
     nullifierHash: deposit.nullifierHash,
-    recipient: bigInt(recipient),
+    recipient: bigInt.leBuff2int(keccak256(recipient)),
     relayer: bigInt(relayerAddress),
     fee: bigInt(fee),
     refund: bigInt(refund),
@@ -364,31 +365,18 @@ function parseNote(noteString) {
  */
 async function init({ rpc, noteNetId, currency = 'dai', amount = '100' }) {
   let contractJson, erc20ContractJson, erc20tornadoJson, tornadoAddress, tokenAddress
-  // TODO do we need this? should it work in browser really?
-  if (inBrowser) {
-    // Initialize using injected web3 (Metamask)
-    // To assemble web version run `npm run browserify`
-    web3 = new Web3(window.web3.currentProvider, null, { transactionConfirmationBlocks: 1 })
-    contractJson = await (await fetch('build/contracts/ETHTornado.json')).json()
-    circuit = await (await fetch('build/circuits/withdraw.json')).json()
-    proving_key = await (await fetch('build/circuits/withdraw_proving_key.bin')).arrayBuffer()
-    MERKLE_TREE_HEIGHT = 20
-    ETH_AMOUNT = 1e18
-    TOKEN_AMOUNT = 1e19
-    senderAccount = (await web3.eth.getAccounts())[0]
-  } else {
-    // Initialize from local node
-    web3 = new Web3(rpc, null, { transactionConfirmationBlocks: 1 })
-    contractJson = require('./build/contracts/ETHTornado.json')
-    circuit = require('./build/circuits/withdraw.json')
-    proving_key = fs.readFileSync('build/circuits/withdraw_proving_key.bin').buffer
-    MERKLE_TREE_HEIGHT = process.env.MERKLE_TREE_HEIGHT
-    ETH_AMOUNT = process.env.ETH_AMOUNT
-    TOKEN_AMOUNT = process.env.TOKEN_AMOUNT
-    PRIVATE_KEY = process.env.PRIVATE_KEY
-    erc20ContractJson = require('./build/contracts/ERC20Mock.json')
-    erc20tornadoJson = require('./build/contracts/ERC20Tornado.json')
-  }
+  // Initialize from local node
+  web3 = new Web3(rpc, null, { transactionConfirmationBlocks: 1 })
+  circuit = require('./build/circuits/withdraw.json')
+  contractJson = require('./build/contracts/ERC20Tornado.json')
+  proving_key = fs.readFileSync('build/circuits/withdraw_proving_key.bin').buffer
+  MERKLE_TREE_HEIGHT = process.env.MERKLE_TREE_HEIGHT
+  ETH_AMOUNT = process.env.ETH_AMOUNT
+  TOKEN_AMOUNT = process.env.TOKEN_AMOUNT
+  PRIVATE_KEY = process.env.PRIVATE_KEY
+  erc20ContractJson = require('./build/contracts/ERC20Mock.json')
+  erc20tornadoJson = require('./build/contracts/ERC20Tornado.json')
+
   // groth16 initialises a lot of Promises that will never be resolved, that's why we need to use process.exit to terminate the CLI
   groth16 = await buildGroth16()
   netId = await web3.eth.net.getId()
@@ -398,8 +386,8 @@ async function init({ rpc, noteNetId, currency = 'dai', amount = '100' }) {
   isLocalRPC = netId > 42
 
   if (isLocalRPC) {
-    tornadoAddress = currency === 'eth' ? contractJson.networks[netId].address : erc20tornadoJson.networks[netId].address
-    tokenAddress = currency !== 'eth' ? erc20ContractJson.networks[netId].address : null
+    tornadoAddress = erc20tornadoJson.networks[netId].address
+    tokenAddress = erc20ContractJson.networks[netId].address
     senderAccount = (await web3.eth.getAccounts())[0]
   } else {
     try {

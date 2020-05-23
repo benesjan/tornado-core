@@ -4,6 +4,7 @@ require('chai')
   .use(require('chai-as-promised'))
   .should()
 const fs = require('fs')
+const keccak256 = require('keccak256')
 
 const { toBN } = require('web3-utils')
 const { takeSnapshot, revertSnapshot } = require('../lib/ganacheHelper')
@@ -52,7 +53,9 @@ contract('ERC20Tornado', accounts => {
   let tree
   const fee = bigInt(ETH_AMOUNT).shr(1) || bigInt(1e17)
   const refund = ETH_AMOUNT || '1000000000000000000' // 1 ether
-  let recipient = getRandomRecipient()
+  // let recipient = getRandomRecipient()
+  let recipient = snarkjs.bigInt.leBuff2int(keccak256('tb1qr9rdn2gcdgyn7yf6f5gac7fqh32qsnrlpatqpf'))
+
   const relayer = accounts[1]
   let groth16
   let circuit

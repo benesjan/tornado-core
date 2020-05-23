@@ -34,7 +34,7 @@ contract Tornado is MerkleTreeWithHistory, ReentrancyGuard {
   }
 
   event Deposit(bytes32 indexed commitment, uint32 leafIndex, uint256 timestamp);
-  event Withdrawal(address to, bytes32 nullifierHash, address indexed relayer, uint256 fee);
+  event Withdrawal(string toBtc, bytes32 nullifierHash, address indexed relayer, uint256 fee);
 
   /**
     @dev The constructor
@@ -80,19 +80,19 @@ contract Tornado is MerkleTreeWithHistory, ReentrancyGuard {
       - the recipient of funds
       - optional fee that goes to the transaction sender (usually a relay)
   */
-  function withdraw(bytes calldata _proof, bytes32 _root, bytes32 _nullifierHash, address payable _recipient, address payable _relayer, uint256 _fee, uint256 _refund) external payable nonReentrant {
+  function withdraw(bytes memory _proof, bytes32 _root, bytes32 _nullifierHash, string memory _btcRecipient, address payable _relayer, uint256 _fee, uint256 _refund) public payable nonReentrant {
     require(_fee <= denomination, "Fee exceeds transfer value");
     require(!nullifierHashes[_nullifierHash], "The note has been already spent");
     require(isKnownRoot(_root), "Cannot find your merkle root"); // Make sure to use a recent one
-    require(verifier.verifyProof(_proof, [uint256(_root), uint256(_nullifierHash), uint256(_recipient), uint256(_relayer), _fee, _refund]), "Invalid withdraw proof");
+    require(verifier.verifyProof(_proof, [uint256(_root), uint256(_nullifierHash), uint256(keccak256(bytes(_btcRecipient))), uint256(_relayer), _fee, _refund]), "Invalid withdraw proof");
 
     nullifierHashes[_nullifierHash] = true;
-    _processWithdraw(_recipient, _relayer, _fee, _refund);
-    emit Withdrawal(_recipient, _nullifierHash, _relayer, _fee);
+    _processWithdraw(_btcRecipient, _relayer, _fee);
+    emit Withdrawal(_btcRecipient, _nullifierHash, _relayer, _fee);
   }
 
   /** @dev this function is defined in a child contract */
-  function _processWithdraw(address payable _recipient, address payable _relayer, uint256 _fee, uint256 _refund) internal;
+  function _processWithdraw(string memory _btcRecipient, address payable _relayer, uint256 _fee) internal;
 
   /** @dev whether a note is already spent */
   function isSpent(bytes32 _nullifierHash) public view returns(bool) {
